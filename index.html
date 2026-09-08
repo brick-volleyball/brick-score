@@ -166,16 +166,22 @@
   .team.b .team-name{ color:var(--team-b); }
 
   .score-row{
+    position:relative;
     display:flex; align-items:center; justify-content:center;
-    gap: clamp(0.3rem, 1.5vw, 1rem);
     width:100%;
     min-width:0;
   }
+  /* 得セットの〇は得点の近くではなく、画面(パネル)の外側の端に寄せて配置する */
   .set-lights{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
     display:flex; flex-direction:column; align-items:center;
     gap: clamp(0.25rem, 1vh, 0.6rem);
-    flex:0 0 auto;
+    z-index:1;
   }
+  .team.a .set-lights{ left: clamp(0.15rem, 1.5vw, 0.6rem); }
+  .team.b .set-lights{ right: clamp(0.15rem, 1.5vw, 0.6rem); }
   .light{
     width: clamp(0.5rem, 1.3vw, 0.85rem);
     height: clamp(0.5rem, 1.3vw, 0.85rem);
@@ -385,7 +391,7 @@
 (function(){
   "use strict";
   // バージョン表記: 更新のたびにここを書き換える(プロジェクトの依頼事項に対応)
-  var VERSION = "v1.5.0";
+  var VERSION = "v1.5.1";
   var VERSION_DATE = "2026-09-08";
   var SET_LIGHTS = 4;
   document.getElementById('versionBadge').textContent = VERSION + " (" + VERSION_DATE + ")";
@@ -508,7 +514,10 @@
 
       var lightsW = item.lights ? item.lights.getBoundingClientRect().width : 0;
       var rowGap = row ? (parseFloat(getComputedStyle(row).columnGap || getComputedStyle(row).gap)||0) : 0;
-      var availW = panel.clientWidth - padH - lightsW - rowGap - 8;
+      // set-lightsは絶対配置で画面端に固定されており、得点ボタンはパネル全体の
+      // 幅を基準に中央寄せされるため、〇との重なりを避けるには左右両側分(×2)を
+      // 差し引く必要がある
+      var availW = panel.clientWidth - padH - lightsW*2 - rowGap - 8;
 
       if(availW <= 10 || availH <= 10) return;
 
