@@ -19,7 +19,7 @@
     --gold:#ffd23f;
     --danger:#ff5c72;
     --danger-soft: rgba(255,92,114,0.16);
-    --font-display: 'Arial Narrow', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+    --font-display: system-ui, -apple-system, 'Segoe UI', Roboto, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
     --font-ui: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', 'Noto Sans JP', sans-serif;
   }
 
@@ -35,23 +35,26 @@
   #app{
     display:flex; flex-direction:column;
     width:100vw; height:100vh; height:100dvh;
+    min-width:0; min-height:0;
   }
 
   /* ---------- header ---------- */
   header{
     display:flex; align-items:center; justify-content:space-between;
-    padding: 0.6rem 1rem;
+    flex-wrap:wrap;
+    padding: 0.4rem 0.7rem;
     background:var(--bg-panel);
     border-bottom:1px solid var(--line);
     flex: 0 0 auto;
-    gap: 0.75rem;
+    min-width:0;
+    gap: 0.4rem 0.6rem;
   }
-  .hdr-group{ display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; }
+  .hdr-group{ display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap; min-width:0; }
   .badge{
-    font-size:0.68rem; color:var(--text-dim);
+    font-size:0.62rem; color:var(--text-dim);
     background:var(--bg-panel-raise);
     border:1px solid var(--line);
-    padding: 0.25rem 0.55rem;
+    padding: 0.2rem 0.5rem;
     border-radius: 999px;
     letter-spacing:0.02em;
     white-space:nowrap;
@@ -59,20 +62,21 @@
   .set-badge{
     font-family:var(--font-display);
     font-weight:700;
-    font-size:1.15rem; letter-spacing:0.02em;
+    font-size:1rem; letter-spacing:0.02em;
     background:var(--bg-panel-raise);
     border:1px solid var(--line);
-    padding:0.3rem 0.9rem;
+    padding:0.25rem 0.7rem;
     border-radius:999px;
     color:var(--text);
-    display:flex; align-items:center; gap:0.5rem;
+    display:flex; align-items:center; gap:0.4rem;
+    white-space:nowrap;
   }
   .set-badge b{ color:var(--gold); font-weight:700; }
   select.fmt{
     background:var(--bg-panel-raise); color:var(--text-dim);
     border:1px solid var(--line); border-radius:999px;
-    font-family:var(--font-ui); font-size:0.68rem;
-    padding:0.25rem 0.5rem;
+    font-family:var(--font-ui); font-size:0.62rem;
+    padding:0.22rem 0.45rem;
   }
   button{
     font-family:var(--font-ui);
@@ -84,8 +88,8 @@
     color:var(--text);
     border:1px solid var(--line);
     border-radius: 8px;
-    padding: 0.4rem 0.7rem;
-    font-size:0.72rem;
+    padding: 0.35rem 0.55rem;
+    font-size:0.65rem;
     font-weight:700;
     letter-spacing:0.02em;
     transition: background 0.15s, color 0.15s, border-color 0.15s;
@@ -115,23 +119,26 @@
   main{
     flex:1 1 auto;
     display:grid;
-    grid-template-columns: 1fr auto 1fr;
-    min-height:0;
+    grid-template-columns: minmax(0,1fr) auto minmax(0,1fr);
+    min-width:0; min-height:0;
+    overflow:hidden;
   }
   .team{
     position:relative;
     display:flex; flex-direction:column;
     align-items:center;
     justify-content:center;
-    min-height:0;
-    padding: 0.5rem 1rem 1rem;
+    min-width:0; min-height:0;
+    overflow:hidden;
+    padding: 0.4rem 0.6rem 0.6rem;
   }
   .team.a{ background: linear-gradient(180deg, var(--team-a-soft), transparent 40%); }
   .team.b{ background: linear-gradient(180deg, var(--team-b-soft), transparent 40%); }
 
   .team-head{
-    display:flex; align-items:center; gap:0.55rem;
-    max-width:92%;
+    display:flex; align-items:center; gap:0.4rem;
+    max-width:100%;
+    min-width:0;
   }
   .serve-dot{
     width:1.1rem; height:1.1rem; border-radius:50%;
@@ -146,8 +153,9 @@
   .team.b .serve-dot.on{ background:var(--team-b); opacity:1; box-shadow:0 0 10px var(--team-b); }
 
   .team-name{
-    font-weight:900; font-size: clamp(1.1rem, 2.6vw, 1.9rem);
+    font-weight:900; font-size: clamp(0.95rem, 2vw, 1.6rem);
     max-width: 100%;
+    min-width:0;
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     outline:none; border-bottom: 1px dashed transparent;
     padding: 0.1rem 0.15rem;
@@ -160,17 +168,18 @@
 
   .score-row{
     display:flex; align-items:center; justify-content:center;
-    gap: clamp(0.5rem, 2vw, 1.5rem);
+    gap: clamp(0.3rem, 1.5vw, 1rem);
     width:100%;
+    min-width:0;
   }
   .set-lights{
     display:flex; flex-direction:column; align-items:center;
-    gap: clamp(0.35rem, 1.6vh, 0.85rem);
+    gap: clamp(0.25rem, 1vh, 0.6rem);
     flex:0 0 auto;
   }
   .light{
-    width: clamp(0.7rem, 1.8vw, 1.15rem);
-    height: clamp(0.7rem, 1.8vw, 1.15rem);
+    width: clamp(0.5rem, 1.3vw, 0.85rem);
+    height: clamp(0.5rem, 1.3vw, 0.85rem);
     border-radius:50%;
     border:2px solid var(--line);
     background:transparent;
@@ -183,10 +192,14 @@
     appearance:none; -webkit-appearance:none; border:none; background:transparent; color:var(--text);
     font-family:var(--font-display); font-weight:700;
     font-variant-numeric: tabular-nums;
-    font-size: clamp(6rem, 24vw, 15rem);
+    /* 2桁になっても縦横どちらの画面にも収まるよう、画面幅・画面高さ両方から
+       固定オーバーヘッド(ヘッダー/フッター/チーム名/ボタン等)を差し引いた
+       残りサイズを基準にする(vw/vhだけの単純比率だと、はみ出す原因になる) */
+    font-size: clamp(2rem, min(calc(25vw - 1.2rem), calc(105vh - 13rem)), 9rem);
     line-height:0.9;
-    padding: 0.1em 0.15em;
-    margin: 0.1em 0 0;
+    min-width:0;
+    padding: 0 0.15rem;
+    margin: 0;
     border-radius: 1.2rem;
     transition: background 0.1s, transform 0.06s;
     touch-action: manipulation;
@@ -194,38 +207,40 @@
   .score-btn:active{ transform: scale(0.97); background: rgba(255,255,255,0.06); }
 
   .minus-btn{
-    width:2.3rem; height:2.3rem; border-radius:50%;
+    width:2rem; height:2rem; border-radius:50%;
     background:var(--bg-panel-raise); border:1px solid var(--line);
-    color:var(--text-dim); font-size:1.2rem; font-weight:700;
+    color:var(--text-dim); font-size:1.05rem; font-weight:700;
     display:flex; align-items:center; justify-content:center;
-    margin-top:0.3rem;
+    flex:0 0 auto;
+    margin-top:0.25rem;
     touch-action: manipulation;
   }
   .minus-btn:hover{ color:var(--danger); border-color:var(--danger); }
 
   .divider{
     display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:0.6rem; padding: 0 0.75rem;
+    min-width:0; min-height:0;
+    gap:0.4rem; padding: 0 0.5rem;
     border-left:1px solid var(--line); border-right:1px solid var(--line);
   }
   .divider .vs{
     font-family:var(--font-display); font-weight:700;
-    font-size:1.6rem; color:var(--text-dim); letter-spacing:0.02em;
+    font-size:clamp(0.9rem, 3vh, 1.3rem); color:var(--text-dim); letter-spacing:0.02em;
   }
   .divider .sets-line{
     font-family:var(--font-display); font-weight:700;
     font-variant-numeric: tabular-nums;
-    font-size:1.9rem; display:flex; align-items:center; gap:0.4rem;
+    font-size:clamp(1.1rem, 4vh, 1.6rem); display:flex; align-items:center; gap:0.3rem;
   }
   .divider .sets-line .a{ color:var(--team-a); }
   .divider .sets-line .b{ color:var(--team-b); }
-  .divider .sets-line .sep{ color:var(--text-dim); font-size:1.1rem; }
+  .divider .sets-line .sep{ color:var(--text-dim); font-size:0.85em; }
 
   .swap-btn{
-    width:2.3rem; height:2.3rem; border-radius:50%;
+    width:1.9rem; height:1.9rem; border-radius:50%;
     background:var(--bg-panel-raise); border:1px solid var(--line);
     color:var(--text-dim); display:flex; align-items:center; justify-content:center;
-    font-size:1.1rem;
+    font-size:0.95rem; flex:0 0 auto;
     touch-action: manipulation;
   }
   .swap-btn:hover{ color:var(--gold); border-color:var(--gold); }
@@ -235,10 +250,11 @@
     flex:0 0 auto;
     background:var(--bg-panel);
     border-top:1px solid var(--line);
-    padding: 0.4rem 1rem;
-    font-size:0.7rem; color:var(--text-dim);
+    padding: 0.3rem 0.7rem;
+    font-size:0.65rem; color:var(--text-dim);
     display:flex; align-items:center; justify-content:center;
-    gap:1rem;
+    gap:0.7rem;
+    min-width:0;
     overflow-x:auto;
     -webkit-overflow-scrolling: touch;
     white-space:nowrap;
@@ -345,7 +361,7 @@
     <section class="team a" id="teamAPanel">
       <div class="team-head">
         <span class="serve-dot" id="serveA" title="サーブ権"></span>
-        <span class="team-name" id="nameA" contenteditable="true" spellcheck="false">BRICK</span>
+        <span class="team-name" id="nameA" contenteditable="true" spellcheck="false">チームA</span>
       </div>
       <div class="score-row">
         <div class="set-lights" id="lightsA"></div>
@@ -363,7 +379,7 @@
     <section class="team b" id="teamBPanel">
       <div class="team-head">
         <span class="serve-dot" id="serveB" title="サーブ権"></span>
-        <span class="team-name" id="nameB" contenteditable="true" spellcheck="false">対戦相手</span>
+        <span class="team-name" id="nameB" contenteditable="true" spellcheck="false">チームB</span>
       </div>
       <div class="score-row">
         <button class="score-btn" id="scoreB">0</button>
@@ -393,7 +409,7 @@
 (function(){
   "use strict";
   // バージョン表記: 更新のたびにここを書き換える(プロジェクトの依頼事項に対応)
-  var VERSION = "v1.2.0";
+  var VERSION = "v1.3.0";
   var VERSION_DATE = "2026-09-08";
   var SET_LIGHTS = 4;
   document.getElementById('versionBadge').textContent = VERSION + " (" + VERSION_DATE + ")";
@@ -401,8 +417,8 @@
   var STORAGE_KEY = "brick-volleyball-scoreboard-state-v1";
 
   var defaultState = {
-    nameA: "BRICK",
-    nameB: "対戦相手",
+    nameA: "チームA",
+    nameB: "チームB",
     scoreA: 0,
     scoreB: 0,
     setsWonA: 0,
@@ -474,6 +490,57 @@
     }).join('');
   }
 
+  // 得点の文字サイズを実測して自動調整する。
+  // CSSのclamp()だけだと、端末やフォントの違いで縦画面・横画面どちらかで
+  // はみ出すことがあるため、実際に描画されたボックスサイズを測って
+  // 確実に収まるフォントサイズを二分探索で求める(brick-scene-playerの
+  // --app-height対応と同じ考え方: 計算に頼らず実測して合わせる)。
+  function fitScoreButtons(){
+    [
+      { panelId:'teamAPanel', btn:el.scoreA, lights:el.lightsA },
+      { panelId:'teamBPanel', btn:el.scoreB, lights:el.lightsB }
+    ].forEach(function(item){
+      var panel = document.getElementById(item.panelId);
+      var btn = item.btn;
+      if(!panel || !btn) return;
+
+      var head = panel.querySelector('.team-head');
+      var minus = panel.querySelector('.minus-btn');
+      var row = btn.parentElement;
+
+      var ps = getComputedStyle(panel);
+      var padV = (parseFloat(ps.paddingTop)||0) + (parseFloat(ps.paddingBottom)||0);
+      var padH = (parseFloat(ps.paddingLeft)||0) + (parseFloat(ps.paddingRight)||0);
+
+      var headH = head ? head.getBoundingClientRect().height : 0;
+      var minusRect = minus ? minus.getBoundingClientRect().height : 0;
+      var minusMarginTop = minus ? (parseFloat(getComputedStyle(minus).marginTop)||0) : 0;
+
+      var availH = panel.clientHeight - padV - headH - minusRect - minusMarginTop - 8;
+
+      var lightsW = item.lights ? item.lights.getBoundingClientRect().width : 0;
+      var rowGap = row ? (parseFloat(getComputedStyle(row).columnGap || getComputedStyle(row).gap)||0) : 0;
+      var availW = panel.clientWidth - padH - lightsW - rowGap - 8;
+
+      if(availW <= 10 || availH <= 10) return;
+
+      var lo = 14, hi = 280, best = lo;
+      for(var i=0;i<16;i++){
+        var mid = (lo+hi)/2;
+        btn.style.fontSize = mid + 'px';
+        var fits = btn.scrollWidth <= availW && btn.scrollHeight <= availH;
+        if(fits){ best = mid; lo = mid; } else { hi = mid; }
+      }
+      btn.style.fontSize = best + 'px';
+    });
+  }
+
+  var fitTimer = null;
+  function scheduleFit(){
+    clearTimeout(fitTimer);
+    fitTimer = setTimeout(fitScoreButtons, 60);
+  }
+
   function render(){
     el.setNum.textContent = state.currentSet;
     el.fmtSelect.value = String(state.format);
@@ -518,6 +585,7 @@
     }
 
     persist();
+    scheduleFit();
   }
 
   function leftKeyNow(){ return state.swapped ? 'B' : 'A'; }
@@ -637,7 +705,15 @@
     }catch(e){ /* fullscreen unavailable in this context */ }
   });
 
+  // 画面回転・リサイズ・アドレスバーの表示/非表示のたびに、得点の文字サイズを再計算する
+  window.addEventListener('resize', scheduleFit);
+  window.addEventListener('orientationchange', scheduleFit);
+  if(window.visualViewport){ window.visualViewport.addEventListener('resize', scheduleFit); }
+
   render();
+  scheduleFit();
+  // フォント読み込み完了後にも念のため再計算(初回描画時の測定ずれ対策)
+  if(document.fonts && document.fonts.ready){ document.fonts.ready.then(scheduleFit); }
 })();
 </script>
 
