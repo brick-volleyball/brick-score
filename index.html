@@ -111,9 +111,17 @@
     border-radius: 8px;
     color:var(--text-dim);
     font-size:1rem;
+    text-decoration:none;
     touch-action: manipulation;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
   }
   .icon-btn:hover{ color:var(--text); }
+  /* 全画面表示中は、明確に「戻る」とわかるようボタンをラベル付きの横長表示にする */
+  .icon-btn.is-fullscreen{
+    width:auto; padding:0 0.7rem; gap:0.35rem;
+    font-size:0.72rem; font-weight:700; letter-spacing:0.02em;
+    color:var(--gold); border-color:var(--gold);
+  }
 
   /* ---------- main scoreboard ---------- */
   main{
@@ -339,7 +347,7 @@
   <header>
     <div class="hdr-group">
       <span class="badge" id="versionBadge">v1.0.0</span>
-      <button class="icon-btn" id="fullscreenBtn" title="全画面表示">⛶</button>
+      <button class="icon-btn" id="fullscreenBtn" title="全画面表示(横向き固定)">⛶</button>
     </div>
 
     <div class="hdr-group">
@@ -409,7 +417,7 @@
 (function(){
   "use strict";
   // バージョン表記: 更新のたびにここを書き換える(プロジェクトの依頼事項に対応)
-  var VERSION = "v1.3.0";
+  var VERSION = "v1.4.1";
   var VERSION_DATE = "2026-09-08";
   var SET_LIGHTS = 4;
   document.getElementById('versionBadge').textContent = VERSION + " (" + VERSION_DATE + ")";
@@ -495,7 +503,19 @@
   // はみ出すことがあるため、実際に描画されたボックスサイズを測って
   // 確実に収まるフォントサイズを二分探索で求める(brick-scene-playerの
   // --app-height対応と同じ考え方: 計算に頼らず実測して合わせる)。
+  //
+  // 得点は「今表示されている桁数」ではなく、両チームの現在の得点のうち
+  // 最大の桁数(最低2桁)を基準に測定する。実際の桁数で測ると、例えば
+  // 片方が1桁・もう片方が2桁のときにサイズがバラバラになってしまうため、
+  // 常に同じ基準で測って両チーム同じフォントサイズに揃える。
   function fitScoreButtons(){
+    var digitsA = String(state.scoreA).length;
+    var digitsB = String(state.scoreB).length;
+    var probeDigits = Math.max(2, digitsA, digitsB);
+    var probeText = new Array(probeDigits + 1).join('8'); // 例: 2桁なら "88"
+
+    var results = [];
+
     [
       { panelId:'teamAPanel', btn:el.scoreA, lights:el.lightsA },
       { panelId:'teamBPanel', btn:el.scoreB, lights:el.lightsB }
@@ -524,6 +544,9 @@
 
       if(availW <= 10 || availH <= 10) return;
 
+      var originalText = btn.textContent;
+      btn.textContent = probeText;
+
       var lo = 14, hi = 280, best = lo;
       for(var i=0;i<16;i++){
         var mid = (lo+hi)/2;
@@ -531,8 +554,16 @@
         var fits = btn.scrollWidth <= availW && btn.scrollHeight <= availH;
         if(fits){ best = mid; lo = mid; } else { hi = mid; }
       }
-      btn.style.fontSize = best + 'px';
+
+      btn.textContent = originalText;
+      results.push(best);
     });
+
+    if(results.length === 0) return;
+    // 両チームのうち、より狭い方に合わせて揃える(どちらもはみ出さないように)
+    var shared = Math.min.apply(null, results) + 'px';
+    if(el.scoreA) el.scoreA.style.fontSize = shared;
+    if(el.scoreB) el.scoreB.style.fontSize = shared;
   }
 
   var fitTimer = null;
@@ -695,14 +726,46 @@
   });
 
   // fullscreen(非対応環境では無視)
+  // 全画面表示にした時は横向きに固定する(brick-scene-playerと同じ方式)。
+  // screen.orientation.lock は全画面状態でないと呼べない端末が多いため、
+  // requestFullscreenの完了を待ってから試みる。非対応環境では単に無視する。
+  // 全画面中はアドレスバー等が隠れて戻り方が分かりにくいため、ボタン自体を
+  // 「⤡ 戻る」というラベル付きの表示に切り替え、そのまま押せば全画面を
+  // 終了できるようにする(全画面に入る/出るは同じボタンが兼ねる)。
+  function updateFullscreenBtn(){
+    var isFs = !!document.fullscreenElement;
+    el.fullscreenBtn.classList.toggle('is-fullscreen', isFs);
+    el.fullscreenBtn.innerHTML = isFs ? '⤡ 戻る' : '⛶';
+    el.fullscreenBtn.title = isFs ? '全画面表示を終了' : '全画面表示(横向き固定)';
+  }
+
   el.fullscreenBtn.addEventListener('click', function(){
     try{
       if(!document.fullscreenElement){
-        document.documentElement.requestFullscreen && document.documentElement.requestFullscreen();
+        var req = document.documentElement.requestFullscreen && document.documentElement.requestFullscreen();
+        var lockLandscape = function(){
+          try{
+            if(screen.orientation && screen.orientation.lock){
+              screen.orientation.lock('landscape').catch(function(){ /* 非対応環境は無視 */ });
+            }
+          }catch(e){ /* 非対応環境は無視 */ }
+          scheduleFit();
+        };
+        if(req && req.then){ req.then(lockLandscape).catch(function(){}); }
+        else { lockLandscape(); }
       }else{
+        try{ screen.orientation && screen.orientation.unlock && screen.orientation.unlock(); }catch(e){}
         document.exitFullscreen && document.exitFullscreen();
       }
     }catch(e){ /* fullscreen unavailable in this context */ }
+  });
+
+  document.addEventListener('fullscreenchange', function(){
+    if(!document.fullscreenElement){
+      try{ screen.orientation && screen.orientation.unlock && screen.orientation.unlock(); }catch(e){}
+    }
+    updateFullscreenBtn();
+    scheduleFit();
   });
 
   // 画面回転・リサイズ・アドレスバーの表示/非表示のたびに、得点の文字サイズを再計算する
